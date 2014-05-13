@@ -178,7 +178,7 @@ void mips_isa_LW_impl(struct mips_ctx_t *ctx)
 		fatal("LW: address error, effective address must be naturallty-aligned\n");
 	mem_read(ctx->mem, addr, 4, &temp);
 	mips_gpr_set_value(ctx,RT, temp);
-	mips_isa_inst_debug("  r%x=0x%x, r%x=%d", RT, temp, RT, temp);
+	mips_isa_inst_debug("  r%x=0x%x, r%x=%d", RT, temp, RT, mips_gpr_get_value(ctx,RT));
 	//mips_isa_inst_debug("  $0x%x=>tmp0, tmp0+r%d=>tmp0, tmp0=>r%d\n", SEXT32(IMM,16), RS, RT);
 	//mips_isa_inst_debug("  value loaded: %x", temp);
 }
@@ -239,7 +239,7 @@ void mips_isa_SW_impl(struct mips_ctx_t *ctx)
 	unsigned int addr = mips_gpr_get_value(ctx,RS) + SEXT32(IMM,16);
 
 	mem_write(ctx->mem, addr, 4, &temp);
-	mips_isa_inst_debug(" value stored: 0x%x", temp);
+	mips_isa_inst_debug(" value stored: 0x%x memory address: 0x%x 0x%x", temp, mips_gpr_get_value(ctx,RS), SEXT32(IMM,16));
 }
 
 
@@ -366,7 +366,7 @@ void mips_isa_SRLV_impl(struct mips_ctx_t *ctx)
 {
 	unsigned int s = BITS32(mips_gpr_get_value(ctx,RS), 4, 0);
 	mips_gpr_set_value(ctx,RD, mips_gpr_get_value(ctx,RT) >> s);
-	mips_isa_inst_debug("  r%d=0x%x, r%d=%d", RD, mips_gpr_get_value(ctx,RT) >> s, RD, mips_gpr_get_value(ctx,RT) >> s);
+	mips_isa_inst_debug("  r%d=0x%x, r%d=0x%x, r%d=0x%x", RD, mips_gpr_get_value(ctx,RT) >> s, RT, mips_gpr_get_value(ctx,RT), RS, s);
 }
 void mips_isa_ROTRV_impl(struct mips_ctx_t *ctx)
 {
